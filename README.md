@@ -61,14 +61,40 @@ runs a root-based image with no security context, so VKS clusters refuse its pod
    public, or add an image pull secret to the namespace. Set the same version as `newTag` in
    `apps/guestbook/overlays/lab/kustomization.yaml`.
 
-3. **Application.** Edit `repoURL`, the cluster `server` and the Argo CD namespace in
-   `argocd/guestbook-app.yaml`, then:
+3. **Connect the repo.** In the Argo CD UI, go to Settings > Repositories > Connect Repo and
+   add this repository over HTTPS. No credentials are needed while the repo is public; a
+   private repo needs a read-only token.
 
-   ```
-   kubectl apply -f argocd/guestbook-app.yaml
-   ```
+4. **Application.** Edit `repoURL`, the cluster `server` and the Argo CD namespace in
+   `argocd/guestbook-app.yaml`, then create it in either of two ways:
 
-   Sync it in the Argo CD UI.
+   - **Paste into the UI (this is how it was tested).** Click **+ New App**, then
+     **Edit as YAML**, paste the contents of `argocd/guestbook-app.yaml` (leave out the
+     `metadata.namespace` line, since the UI sets it), and create it.
+   - **kubectl.** Apply it on the Supervisor, in the Argo CD instance's namespace:
+
+     ```
+     kubectl apply -f argocd/guestbook-app.yaml
+     ```
+
+   Either way, sync it in the Argo CD UI, then open the `guestbook-ui` Service's external
+   address in a browser.
+
+## What has been tested
+
+Tested on VCF 9 with Argo CD `3.5.3+vmware.1-vks.1` and a VKS cluster running Kubernetes
+`v1.35.6+vmware.2`.
+
+| Item | Status |
+| --- | --- |
+| Image builds for `linux/amd64` and runs with a read-only filesystem, all capabilities dropped and no privilege escalation | Tested locally |
+| GitHub Actions workflow builds and pushes the image to GHCR on a version tag | Tested (ran successfully) |
+| Argo CD syncs `apps/guestbook/overlays/lab` from this public repo to the registered VKS cluster | Tested: two pods Healthy, `restricted` namespace label applied, page reachable on the LoadBalancer address |
+| Application created by pasting `argocd/guestbook-app.yaml` into the Argo CD UI | Tested |
+| `supervisor/` manifests (Argo CD instance, RoleBinding, EntityManagementPolicy) | Applied during setup from equivalent YAML; the files in this repo were not applied directly |
+| Application created with `kubectl apply -f argocd/guestbook-app.yaml` | Not tested (the UI paste route was used) |
+| `argocd/examples/applicationset-guestbook.yaml` | Not tested |
+| Automated sync, private package with an image pull secret, private repo credentials | Not tested |
 
 ## Notes from real use
 
