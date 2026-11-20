@@ -1,0 +1,11 @@
+# Argo CD instance created by the Argo CD Supervisor Service.
+# Apply on the Supervisor, in a vSphere Namespace you can edit.
+# Supported versions: kubectl get argocdversions argocd-supported-versions -o yaml
+apiVersion: argocd-service.vsphere.vmware.com/v1alpha1
+kind: ArgoCD
+metadata:
+  name: argocd-1
+  namespace: vna-namespace-nllsz
+spec:
+  version: 3.5.3+vmware.1-vks.1
+  enableLoadBalancer: true     # gives the UI a LoadBalancer IP

@@ -1,0 +1,34 @@
+# UNTESTED EXAMPLE: one Application per registered VKS cluster.
+#
+# Add a cluster to the list and an Application for it is generated. The
+# ApplicationSet lives in the Argo CD instance's Supervisor namespace and is
+# applied with kubectl, like the Application in ../guestbook-app.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook
+  namespace: vna-namespace-nllsz
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: k8s-cdd1f722d3
+            server: https://172.20.20.5:6443
+  template:
+    metadata:
+      name: 'guestbook-{{cluster}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/americanbwana/vcf-gitops-examples.git
+        targetRevision: main
+        path: apps/guestbook/overlays/lab
+      destination:
+        server: '{{server}}'
+        namespace: guestbook
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+        managedNamespaceMetadata:
+          labels:
+            pod-security.kubernetes.io/enforce: restricted

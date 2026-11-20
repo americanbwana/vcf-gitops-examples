@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: guestbook
+
+resources:
+  - ../../base
+
+# Image tag. Change this (or let CI do it) to roll out a new build.
+images:
+  - name: ghcr.io/americanbwana/vcf-gitops-guestbook
+    newTag: 0.1.0
+
+replicas:
+  - name: guestbook-ui
+    count: 2
+
+# Expose the app with a LoadBalancer. This assumes the VKS cluster has a
+# load balancer provider (NSX or AVI). Remove this patch to keep it ClusterIP.
+patches:
+  - target:
+      kind: Service
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer

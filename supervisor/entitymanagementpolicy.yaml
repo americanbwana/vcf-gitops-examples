@@ -1,0 +1,17 @@
+# Tells the Argo CD service which VKS clusters to register with the instance.
+# Without a policy the controller notices clusters but registers nothing.
+# This one registers every Cluster in the listed namespaces, including future ones.
+# To limit it to one cluster, add under the rule:  nameSelector: [<cluster-name>]
+apiVersion: argocd-service.vsphere.vmware.com/v1alpha1
+kind: EntityManagementPolicy
+metadata:
+  name: register-vks-clusters
+  namespace: vna-namespace-nllsz          # same namespace as the Argo CD instance
+spec:
+  enabled: true
+  rules:
+    - apiGroup: cluster.x-k8s.io
+      kind: Cluster
+      namespaces:
+        nameSelector:
+          - vna-namespace-nllsz

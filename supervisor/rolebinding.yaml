@@ -1,0 +1,16 @@
+# Lets the Argo CD operator's service account fetch the kubeconfig of VKS clusters
+# in the namespace that hosts them. Without it, registration fails with MissingRoleBinding.
+# The argocd-manage-vks ClusterRole is installed by the Argo CD Supervisor Service.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argocd-vks-access-binding
+  namespace: vna-namespace-nllsz          # namespace that hosts the VKS cluster(s)
+subjects:
+  - kind: ServiceAccount
+    name: argocd-k8s-sa
+    namespace: vna-namespace-nllsz        # namespace of the Argo CD instance
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: argocd-manage-vks

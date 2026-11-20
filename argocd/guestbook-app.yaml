@@ -1,0 +1,30 @@
+# Argo CD Application for the guestbook sample.
+#
+# Apply this on the Supervisor, in the same namespace as the Argo CD instance:
+#   kubectl --context <supervisor-context> apply -f argocd/guestbook-app.yaml
+#
+# Why kubectl and not an Argo CD "app of apps": Application resources live in the
+# Supervisor namespace where Argo CD runs, and this service disables the in-cluster
+# destination, so Argo CD cannot sync Applications into its own namespace.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: vna-namespace-nllsz          # namespace of the Argo CD instance
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/americanbwana/vcf-gitops-examples.git
+    targetRevision: main
+    path: apps/guestbook/overlays/lab
+  destination:
+    # Registered VKS cluster. Find it in Argo CD under Settings > Clusters.
+    server: https://172.20.20.5:6443
+    namespace: guestbook
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    # Label the new namespace with the Pod Security level the manifests are built for.
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: restricted

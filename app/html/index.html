@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VCF GitOps Guestbook</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; line-height: 1.5; }
+    h1 { margin-bottom: 0.25rem; }
+    .sub { opacity: 0.7; margin-top: 0; }
+    code { background: rgba(127,127,127,.2); padding: 0.1em 0.35em; border-radius: 4px; }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>VCF GitOps Guestbook</h1>
+  <p class="sub">Deployed by Argo CD to a VKS cluster on a VCF 9 Supervisor.</p>
+  <p>If you can read this, the whole chain works:</p>
+  <ul>
+    <li>Git repository to Argo CD</li>
+    <li>Argo CD to the registered VKS workload cluster</li>
+    <li>A non-root container that passes the <code>restricted</code> Pod Security level</li>
+  </ul>
+  <p>Health endpoint: <code>/healthz</code></p>
+</body>
+</html>
