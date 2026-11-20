@@ -6,6 +6,11 @@ A guestbook sample rebuilt to run cleanly on **VCF 9 / vSphere Supervisor** with
 runs a root-based image with no security context, so VKS clusters refuse its pod under the
 `restricted` Pod Security level. Everything here is built for that level from the start.
 
+> **Educational use only.** This repository is a personal learning project for trying out
+> Argo CD on VCF 9 and the vSphere Supervisor. It is not hardened, supported or reviewed for
+> production use, and it comes with no warranty. The IP addresses, namespace names and cluster
+> names are from a private lab and are examples only. Released under the [MIT License](LICENSE).
+
 ## Layout
 
 | Path | What it is |
